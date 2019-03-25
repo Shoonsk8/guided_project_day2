@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -40,10 +41,6 @@ public class ListActivity extends AppCompatActivity {
         journalEntries = new ArrayList<>();
         addTestEntries();
 
-        for(JournalEntry journalEntry : journalEntries){
-            entryList.addView(generateTextView(journalEntry));
-        }
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +66,26 @@ public class ListActivity extends AppCompatActivity {
             }
         });
         return textView;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        entryList.removeAllViews();
+        for(JournalEntry entry: journalEntries) {
+            entryList.addView(generateTextView(entry));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == EDIT_ENTRY_REQUEST_CODE && resultCode == RESULT_OK){
+            if(data != null){
+                JournalEntry entry = (JournalEntry) data.getSerializableExtra(JournalEntry.TAG);
+                journalEntries.set(entry.getId() - 1, entry);
+            }
+        }
     }
 
     private void addTestEntries() {

@@ -1,5 +1,6 @@
 package com.joshuahalvorson.journal;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -52,6 +53,15 @@ public class JournalDetails extends AppCompatActivity {
                 startActivityForResult(imageIntent, IMAGE_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        JournalEntry newEntry = new JournalEntry(entry.getDate(), journalEntry.getText().toString(), "", dayRating.getProgress(), entry.getId());
+        resultIntent.putExtra(JournalEntry.TAG, newEntry);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 
     @Override
